@@ -131,7 +131,7 @@ function write_table(){
 				if($matches == 0)
 					$table.='<td class="shiftcell closed d'.$d.'" >&nbsp;</td>'."\n";
 				else
-					$table.=sprintf("<td title=\"%s\" class=\"shiftcell open d%u\">%s</td>\n",$match->user->name, $d, ($m==0?$match->user->name:""));
+					$table.=sprintf("<td title=\"%s\" class=\"shift%s shiftcell open d%u\">%s</td>\n",$match->user->name, $match->sid, $d, ($m==0?$match->user->name:""));
 
 				if($matches >1) error(sprintf('mehr als ein match: d:%s h:%s m:%s', $d, $h, $m));
 			}

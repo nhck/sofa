@@ -1,0 +1,172 @@
+@font-face {
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.com */ 
+font-family: Vollkorn;
+font-weight: normal;
+src: url("/sofa/Vollkorn-Regular.ttf");
+}
+	
+@font-face {
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.com */ 
+font-family: Vollkorn;
+font-weight: bold;
+src: url("/sofa/Vollkorn-Regular.ttf");
+}
+body{
+	margin: 0;
+	padding: 0;
+	font-family: Vollkorn;
+}
+
+h1{
+	font-size: 450%;
+	font-weight: bold;
+	text-align: center;
+	padding: 0;
+}
+h2{
+	font-size: 250%;
+	font-weight: bold;
+}
+hgroup{
+	display: block;
+	margin: 0 15px 0 15px;
+}
+
+
+.content{
+	padding:1%;
+	margin-bottom:10px;
+	float:left;
+	width: 98%;
+}
+
+nav {
+	display: block;
+	background-color: #302535;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	padding-top:3px;
+	padding-bottom:4px;
+	border-bottom: 4px solid #555;
+	clear: both;
+}
+#loggedin{
+	float: left;
+	text-align: left;
+	padding-left: 10px;
+	width:30%;
+}
+
+nav ul{
+	list-style: none inside;
+	margin: 0 0 0px 0; 
+	padding: 0 0 15px 0;
+}
+
+nav ul li{
+	float:right;
+	margin-right: 15px;
+}
+
+a.navlink, a.navlink:visited {
+	color: #eeeeee;
+	text-decoration: none;
+}
+a.navlink:hover {
+	color: #cc0000;
+}
+footer p {
+	margin:0;
+	padding: 3px;
+}
+footer{
+	display: block;
+	background-color: #302535;
+	color: #fff;
+	width: 100%;
+	margin: 0;
+	font-size: 12px;
+	text-align: center;
+	clear: both;
+}
+.shiftrow{
+	font-size: 10px;
+}
+.days, .m0{
+	font-size: 14px;
+	height: 16px;
+}
+.shiftcell{
+	background-color: #f4f8d0;
+	width: 90px;
+	border: 1px solid #fff;
+	border-collapse: collapse;
+}
+.m0 td, .m30 td{
+	background-color: #f1d690;
+}
+.time{
+	text-align: right;
+}
+.days .shiftcell{
+	text-align: center;
+	border-top:none;
+}
+.time{
+	width:40px;
+}
+.left{
+	float: left;
+	width: 48%;
+}
+.right{
+	width: 48%;
+	float: right;
+}
+#lagebild{
+	width: 100%;
+}
+
+.adresse{
+	font-size: 14px;
+}
+td.open {
+	padding-left: 10px;
+	border-bottom: 1px solid #e2761d;
+	background-color: #e2761d;
+}
+div.adminsection{
+	padding: 10px;
+	padding-left: 25px;
+	background-color: #f8f8f8;
+	border: 1px solid #ddd;
+	margin-bottom:10px;
+}
+div.adminsection table{
+	width: 100%;
+}
+div.adminsection table tr{
+	width: 100%;
+}
+
+header{
+	display: block;
+	width:100%;
+	margin: 0;
+	color: white;
+	background-color: #980101;
+	padding-bottom:1px;
+	text-align: center;
+}
+hgroup h3{
+	text-align: left;
+	color: #eeeeec;
+	border: 1px solid #e22;
+	background-color: #b11;
+	padding: 5px;
+	font-size:14px;
+}
+table{
+	border-collapse: collapse;
+}

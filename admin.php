@@ -1,7 +1,6 @@
 <?php
 //if(!$_SERVER['HTTPS'])
 //	header(sprintf('Location: https://'.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]));
-require('classes/sqlite.php');
 require('config.php');
 require('classes/user.php');
 require('classes/shift.php');
@@ -51,8 +50,8 @@ if(isset($_POST['action'])){
 			  print "<span id=\"loggedin\">Eingeloggt als ".$_SESSION['user']->name.".</span>";
 		?>
 		<ul>
-			<li><a class="navlink" href="/sofa/">home</a></li>
-			<li><a class="navlink" href="/sofa/admin.php">admin</a></li>
+			<li><a class="navlink" href="./">home</a></li>
+			<li><a class="navlink" href="./admin.php">admin</a></li>
 		</ul>
 		<div style="clear:both;" />
 		</nav>

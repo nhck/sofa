@@ -20,8 +20,8 @@ include('functions.php');
 	<header>
 		<nav>
 		<ul>
-			<li><a class="navlink" href="/sofa/">home</a></li>
-			<li><a class="navlink" href="/sofa/admin.php">admin</a></li>
+			<li><a class="navlink" href="./">home</a></li>
+			<li><a class="navlink" href="admin.php">admin</a></li>
 		</ul>
 		</nav>
 		<hgroup>

@@ -56,8 +56,8 @@ function delete_shift(){
 
 function new_shift(){
 	$act=true;
-	$start=sprintf('%02u%02u',(int)$_POST['starth'],(int)$_POST['startm']);
-	$end=sprintf('%02u%02u',(int)$_POST['endh'],(int)$_POST['endm']);
+	$start=sprintf('%02u:%02u',(int)$_POST['starth'],(int)$_POST['startm']);
+	$end=sprintf('%02u:%02u',(int)$_POST['endh'],(int)$_POST['endm']);
 	$shift=new Shift($start,$end, $_POST['day'], $_SESSION['user']);
 	if($shift->collides()){
 		$alerts[]="Die Schicht ueberschneidet sich.";
@@ -84,9 +84,8 @@ function make_tables(){
 	global $cfg, $sql;
 	$sql->query('create table '.$cfg['dbprefix'].'users (uid INTEGER PRIMARY KEY,name TEXT, email TEXT, fon TEXT, passhash TEXT);');
 	$sql->query('create table '.$cfg['dbprefix'].'shifts (sid INTEGER PRIMARY KEY, start TEXT, end TEXT, day INTEGER, uid INTEGER);');
-
-
 }
+
 function get_shifts(){
 	global $cfg, $sql;
 	$shifts=array();
@@ -106,6 +105,9 @@ function string_splice($string, $offset, $length=0, $replacement=''){
 function write_table(){
 	$shifts=get_shifts();
 
+	// Laufvariablenarray fuer die Rowspan-Berechnung
+	$rowspan_counter= array(0,0,0,0,0);
+
 	$table='<table id="shifttable" border="0" cellspacing="0px" >'."\n";
 	$table.='<tr class="shiftrow days">'."\n";
 	$table.="<td class=\"shiftcell day\"></td>\n";
@@ -118,22 +120,36 @@ function write_table(){
 	for($h=8; $h<22; $h++){
 		for($m=0; $m<60; $m+=15){
 			$table.='<tr class="shiftrow h'.$h.' m'.$m.'">'."\n";
-			$table.='<td class="shiftcell time">'.sprintf('%02u:%02u',$h,$m)."</td>\n";
+			$table.='<td class="shiftcell time">';
+				$table.=sprintf('%02u:%02u',$h,$m)."</td>\n";
 			for($d=0; $d<5; $d++){
 				$matches=0;
-				foreach($shifts as $shift) {
-					if ($shift->is_now(sprintf('%u%02u%02u',$d, $h,$m))) {
-						$matches++;
-						$match=$shift;
+					foreach($shifts as $shift) {
+						if ($shift->is_now(sprintf('%u,%02u:%02u',$d, $h,$m))) {
+							$matches++;
+							$match=$shift;
+						}
+						
 					}
-					
-				}
-				if($matches == 0)
-					$table.='<td class="shiftcell closed d'.$d.'" >&nbsp;</td>'."\n";
-				else
-					$table.=sprintf("<td title=\"%s\" class=\"shift%s shiftcell open d%u\">%s</td>\n",$match->user->name, $match->sid, $d, ($m==0?$match->user->name:""));
+					if($matches == 0)
+						$table.='<td class="shiftcell closed d'.$d.'" >&nbsp;</td>'."\n";
+					else{
+						if($rowspan_counter[$d]<=1){
+							$diff=$match->start->diff($match->end);
+							$rows=$diff->h*4 + $diff->i/15;
+							$rowspan_counter[$d] = $rows;
 
-				if($matches >1) error(sprintf('mehr als ein match: d:%s h:%s m:%s', $d, $h, $m));
+							$table.=sprintf('<td title="%s" rowspan="%s" '
+							.'class="shift%s shiftcell open d%u">%s</td>'."\n",
+							$match->user->name, $rows, $match->sid, $d, 
+								$match->user->name);
+						}else{
+							$rowspan_counter[$d]--;	
+						}
+					}
+
+					if($matches >1) 
+						error(sprintf('mehr als ein match: d:%s h:%s m:%s', $d, $h, $m));
 			}
 			$table.="</tr>\n";
 		}

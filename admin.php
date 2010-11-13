@@ -8,6 +8,7 @@ include('functions.php');
 session_start();
 
 $alerts=array();
+$notifs=array();
 
 if(!isset($_SESSION['user'])) $_SESSION['user'] =false;
 if(isset($_POST['action']) && $_POST['action'] == 'login'){
@@ -23,11 +24,12 @@ if($_SESSION['user'])
 	$_SESSION['user']->select();
 
 if(isset($_POST['action'])){
-	if($_POST['action'] == 'logout')				logout();
-	if($_POST['action'] == 'new_shift')			new_shift();
-	if($_POST['action'] == 'delete_shift')	delete_shift();
-	if($_POST['action'] == 'add_user')			add_user();
-	if($_POST['action'] == 'lost_passwd')		lost_passwd();
+	if($_POST['action'] == 'logout')					logout();
+	if($_POST['action'] == 'new_shift')				new_shift();
+	if($_POST['action'] == 'delete_shift')		delete_shift();
+	if($_POST['action'] == 'add_user')				add_user();
+	if($_POST['action'] == 'lost_passwd')			lost_passwd();
+	if($_POST['action'] == 'change_password')	change_password();
 }
 ?>
 <!DOCTYPE html>
@@ -58,7 +60,10 @@ if(isset($_POST['action'])){
 		<hgroup>
 		<h1>Sofa-Cafe</h1>
 		<h2>Admininterface</h2>
-		<?php foreach($alerts as $alert) printf('<h3>%s</h3>', $alert); ?>
+		<?php 
+			foreach($alerts as $alert) printf('<h3 class="alert">%s</h3>', $alert);
+			foreach($notifs as $notif) printf('<h3 class="notif">%s</h3>', $notif); 
+		?>
 		</hgroup>
 	</header>
 	<div class="content">

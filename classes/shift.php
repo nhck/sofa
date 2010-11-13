@@ -22,7 +22,10 @@ class Shift{
 		$time= explode(',', $time);
 		if ($time[0] != $this->day) return false;
 		$time=new DateTime($time[1]);
-		return (($this->start <= $time) && ($time < $this->end));
+		if(($this->start <= $time) && ($time < $this->end)){
+			return true;
+		}else
+			return false;
 	}
 
 	function collides(){
@@ -32,10 +35,9 @@ class Shift{
 				$cfg['dbprefix'], $this->day));
 		foreach($result as $shift){
 			$shift = new Shift($shift['start'], $shift['end'], $this->day);
-			if( $this->is_now($this->day.$shift->start) 
-			 or $this->is_now($this->day.$shift->end) 
-			 or $shift->is_now($this->day.$this->start) 
-			 or $shift->is_now($this->day.$this->end)){
+			if($shift->day != $this->day) 
+				return false;
+			if( !( ($this->end < $shift->start) or ($this->end > $shift->start) ) ){
 				return true;
 			}
 		}
@@ -44,8 +46,8 @@ class Shift{
 
 	function update(){
 		global $qry, $cfg;
-		$start=$sql->quote(htmlspecialchars($this->start));
-		$end=$sql->quote(htmlspecialchars($this->end));
+		$start=$sql->quote(htmlspecialchars($this->start->format('H:i')));
+		$end=$sql->quote(htmlspecialchars($this->end->format('H:i')));
 		$day=$sql->quote(htmlspecialchars($this->day));
 		$uid=$sql->quote(htmlspecialchars($this->user->uid));
 		$sid=$sql->quote(htmlspecialchars($this->sid));
@@ -56,14 +58,14 @@ class Shift{
 
 	function insert(){
 		global $sql, $cfg;
-		$start=$sql->quote(htmlspecialchars($this->start));
-		$end=$sql->quote(htmlspecialchars($this->end));
+		$start=$sql->quote(htmlspecialchars($this->start->format('H:i')));
+		$end=$sql->quote(htmlspecialchars($this->end->format('H:i')));
 		$day=$sql->quote(htmlspecialchars($this->day));
 		$uid=$sql->quote(htmlspecialchars($this->user->uid));
-		$sql->query(
-			sprintf("insert into %sshifts (start, end, day, uid) "
-				."values (%s, %s, %s, %s);", 
-				$cfg['dbprefix'], $start, $end, $day, $uid));
+		$qry=sprintf("insert into %sshifts (start, end, day, uid) "
+			."values (%s, %s, %s, %s);", 
+			$cfg['dbprefix'], $start, $end, $day, $uid);
+		return $sql->query($qry);
 	}
 
 	function select(){
@@ -72,17 +74,18 @@ class Shift{
 		$result=$sql->query(
 			sprintf('SELECT * FROM %sshifts WHERE sid=%s;',$cfg['dbprefix'], $sid));
 		$row=$result->fetch();
-		$this->start=$row['start'];
-		$this->end=$row['end'];
+		$this->start=new DateTime($row['start']);
+		$this->end=new DateTime($row['end']);
 		$this->day=$row['day'];
 		$this->user=new User($row['uid']);
+		$result->closeCursor();
 	}
 
 	function delete(){
 		global $cfg, $sql;
 		$sid=$sql->quote(htmlspecialchars($this->sid));
 		$qry=sprintf("delete from %sshifts where sid=%s;",$cfg['dbprefix'], $sid);
-		$sql->query($qry);
+		return $sql->query($qry);
 	}
 	
 }

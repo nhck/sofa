@@ -87,7 +87,7 @@
 <td><select name="sid" size="4">
 <?php 
 foreach($_SESSION['user']->shifts as $shift){
-	printf("<option value=\"%s\">%s, %s-%s</option>\n", $shift->sid, substr($weekdays[$shift->day], 0, 2), string_splice($shift->start,2,0,":"),string_splice($shift->end,2,0,":"));
+	printf("<option value=\"%s\">%s, %s-%s</option>\n", $shift->sid, substr($weekdays[$shift->day], 0, 2), $shift->start->format('H:i'),$shift->end->format('H:i'));
 }
 ?>
 </select></td>
@@ -98,6 +98,32 @@ foreach($_SESSION['user']->shifts as $shift){
 </form>
 </table>
 </div>
+
+<div class="adminsection">
+<h3>Passwort aendern</h3>
+<table>
+<form action="admin.php" method="POST">
+<input type="hidden" name="action" value="change_password" />
+<tr>
+<td>Aktuelles Passwort</td>
+<td><input type="password" name="current" /></td>
+</tr>
+<tr>
+<td>Neues Passwort</td>
+<td><input type="password" name="new" /></td>
+</tr>
+<tr>
+<td>Neues Passwort wiederholen</td>
+<td><input type="password" name="repeat" /></td>
+</tr>
+<tr>
+<tr>
+<td><input type="submit" value="Aendern" colspan="2"/></td>
+</tr>
+</form>
+</table>
+</div>
+
 
 <div class="adminsection">
 <h3>Benutzer hinzufuegen</h3>

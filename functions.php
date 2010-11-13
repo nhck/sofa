@@ -11,30 +11,81 @@ function lost_passwd(){
 
 }
 
-function add_user(){
-		$act=true;
-		$name=$sql->quote(htmlspecialchars($_POST['name']));
-		$fon=$sql->quote(htmlspecialchars($_POST['fon']));
-		$email=$sql->quote(htmlspecialchars($_POST['email']));
-		$password=$sql->quote(htmlspecialchars($_POST['password']));
-		$passhash=sha1($password);
-		$passhash=$sql->quote($passhash);
-		
-		$user=new User($name);
-		$user->fon=$fon;
-		$user->email=$email;
-		$user->passhash=$passhash;
+//taken from http://www.gidnetwork.com/b-16.html and changed a bit.
+function get_time_difference( $start, $end )
+{
+    $uts['start']      =    $start->format('U');
+    $uts['end']        =    $end->format('U');
+    if( $uts['start']!==-1 && $uts['end']!==-1 )
+    {
+        if( $uts['end'] >= $uts['start'] )
+        {
+            $diff    =    $uts['end'] - $uts['start'];
+            if( $days=intval((floor($diff/86400))) )
+                $diff = $diff % 86400;
+            if( $hours=intval((floor($diff/3600))) )
+                $diff = $diff % 3600;
+            if( $minutes=intval((floor($diff/60))) )
+                $diff = $diff % 60;
+            $diff    =    intval( $diff );            
+            return( array('days'=>$days, 'hours'=>$hours, 'minutes'=>$minutes, 'seconds'=>$diff) );
+        }
+        else
+        {
+            trigger_error( "Ending date/time is earlier than the start date/time", E_USER_WARNING );
+        }
+    }
+    else
+    {
+        trigger_error( "Invalid date/time data detected", E_USER_WARNING );
+    }
+    return( false );
+}
 
-		$qry=sprintf("select uid from %susers where name=%s;",
-			$cfg['dbprefix'], 
-			$name );
-		if($sql->query($qry)->fetch()){
-			$alerts[]="Dieser Name ist schon Belegt.";
-			$act=false;
-		}
-		if($act){
-			$user->insert();
-		}
+function change_password(){
+	global $sql,$alerts,$notifs;
+	$act=true;
+	if( $_POST['new'] != $_POST['repeat']) {
+		$alerts[]="Passwoerter stimmen nicht ueberein";
+		$act=false;
+	}
+	if( $_SESSION['user']->passhash != sha1($_POST['current'])){
+		$alerts[]="Aktuelles Passwort ist falsch";
+		$act=false;
+	}
+	if($act){
+		$passhash=sha1($_POST['new']);
+		$_SESSION['user']->passhash = $passhash;
+		if ($_SESSION['user']->update()) $notifs[]="Passwort erfolgreich geaendert";
+		else $alerts[]="Unbekannter Fehler, bitte Jan Bescheid geben!";
+	}
+}
+
+function add_user(){
+	global $sql,$cfg;
+	$act=true;
+	$name=$sql->quote(htmlspecialchars($_POST['name']));
+	$fon=$sql->quote(htmlspecialchars($_POST['fon']));
+	$email=$sql->quote(htmlspecialchars($_POST['email']));
+	$passhash=sha1($_POST['password']);
+	$passhash=$sql->quote($passhash);
+	
+	$user=new User($name);
+	$user->fon=$fon;
+	$user->email=$email;
+	$user->passhash=$passhash;
+
+	$qry=sprintf("select uid from %susers where name=%s;",
+		$cfg['dbprefix'], 
+		$name );
+	if($sql->query($qry)->fetch()){
+		$alerts[]="Dieser Name ist schon Belegt.";
+		$act=false;
+	}
+	if($act){
+		if ($user->insert()) $notifs[]="User hinzugefuegt.";
+		else $alerts[]="Unbekannter Fehler, bitte Jan Bescheid geben!";
+	}
 }
 
 function delete_shift(){
@@ -51,10 +102,12 @@ function delete_shift(){
 		$act=false;
 	}
 	if($act)
-		$shift->delete();
+		if ($shift->delete());
+		else $alerts[]="Unbekannter Fehler, bitte Jan Bescheid geben!";
 }
 
 function new_shift(){
+	global $alerts;
 	$act=true;
 	$start=sprintf('%02u:%02u',(int)$_POST['starth'],(int)$_POST['startm']);
 	$end=sprintf('%02u:%02u',(int)$_POST['endh'],(int)$_POST['endm']);
@@ -76,8 +129,10 @@ function new_shift(){
 				$alerts[]="Die Schicht endet, bevor sie angefangen hat.";
 				$act=false;
 	}
-	if($act)
-		$shift->insert();
+	if($act){
+		if($shift->insert()) $notifs[]="Schicht hinuzgefuegt.";
+		else $alerts[]="Unbekannter Fehler, bitte Jan Bescheid geben!";
+	}
 }
 
 function make_tables(){
@@ -93,6 +148,7 @@ function get_shifts(){
 	foreach($result as $row){
 		$shifts[] = new Shift($row['start'], $row['end'], $row['day'], new User('_'.$row['uid']), $row['sid']);
 	}
+	$result->closeCursor();
 	return $shifts;
 }
 
@@ -135,8 +191,8 @@ function write_table(){
 						$table.='<td class="shiftcell closed d'.$d.'" >&nbsp;</td>'."\n";
 					else{
 						if($rowspan_counter[$d]<=1){
-							$diff=$match->start->diff($match->end);
-							$rows=$diff->h*4 + $diff->i/15;
+							$diff=get_time_difference($match->start, $match->end);
+							$rows=$diff['hours']*4 + $diff['minutes']/15;
 							$rowspan_counter[$d] = $rows;
 
 							$table.=sprintf('<td title="%s" rowspan="%s" '
@@ -156,13 +212,5 @@ function write_table(){
 	}
 	$table.="</table>\n";
 	print $table;
-}
-
-function get_user($uid){
-	#global $sql:
-	#$result = $sql->query('SELECT * FROM '.$cfg['dbprefix'].'users WHERE uid='.$uid.';');
-	
-	$user=new User($uid);
-	return $user;
 }
 ?>

@@ -15,6 +15,7 @@ body{
 	margin: 0;
 	padding: 0;
 	font-family: Vollkorn;
+	background-image: url(http://www.tu-harburg.de/sofa/sofa_bg.jpg);
 }
 
 h1{
@@ -100,11 +101,18 @@ footer{
 .shiftcell{
 	background-color: #f4f8d0;
 	width: 90px;
-	border: 1px solid #fff;
 	border-collapse: collapse;
 }
 .m0 td, .m30 td{
 	background-color: #f1d690;
+}
+td.open {
+	font-size: 14px;
+	padding-left: 10px;
+	background-color: #e2761d;
+}
+td.open:hover {
+	background-color: #ec8228;
 }
 .time{
 	text-align: right;
@@ -125,17 +133,14 @@ footer{
 	float: right;
 }
 #lagebild{
-	width: 100%;
+	width: 90%;
+	margin-left: 5%;
 }
 
 .adresse{
 	font-size: 14px;
 }
-td.open {
-	padding-left: 10px;
-	border-bottom: 1px solid #e2761d;
-	background-color: #e2761d;
-}
+
 div.adminsection{
 	padding: 10px;
 	padding-left: 25px;
@@ -159,11 +164,19 @@ header{
 	padding-bottom:1px;
 	text-align: center;
 }
-hgroup h3{
+hgroup h3.alert{
 	text-align: left;
 	color: #eeeeec;
 	border: 1px solid #e22;
 	background-color: #b11;
+	padding: 5px;
+	font-size:14px;
+}
+hgroup h3.notif{
+	text-align: left;
+	color: #eeeeec;
+	border: 1px solid #2a2;
+	background-color: #181;
 	padding: 5px;
 	font-size:14px;
 }

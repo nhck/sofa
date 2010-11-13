@@ -31,13 +31,18 @@ include('functions.php');
 	</header>
 	<div class="content">
 		<div class="left">
-			<p>
-			Das Sofa Café liegt im Norden des TUHH Campus in der sogenannten "Baracke". Ihr findet hier nicht nur gemütliche Sofas, sondern auch nette Menschen die gegen Spende Kaffee, Getränke und Schokoriegel verteilen. 
-			Kommt doch gern vorbei.</p>
-			<p>
-			PS: Wer gern helfen möchte meldet sich am besten im Café.</p>
+			<div class="adminsection">
+				<p>
+				Das Sofa Café liegt im Norden des TUHH Campus in der sogenannten "Baracke". Ihr findet hier nicht nur gemütliche Sofas, sondern auch nette Menschen die gegen Spende Kaffee, Getränke und Schokoriegel verteilen. 
+				Kommt doch gern vorbei.</p>
+				<p>
+				PS: Wer gern helfen möchte meldet sich am besten im Café.</p>
+			</div>
+			<div class="adminsection">
 			<h2>Lage</h2>
 			<img id="lagebild" src="http://www.tu-harburg.de/sofa/campusplan_color.png"/>	
+			</div>
+			<div class="adminsection">
 			<h2>Kontakt</h2>
 			<p>
 			Die Sofa AG ist ein offzielle AG des AStA der Technischen Universität Hamburg-Harburg. (asta.tu-harburg.de)</p>
@@ -51,6 +56,7 @@ include('functions.php');
 			21073 Hamburg<br>
 			Telefonisch: 040 42478-2916</p>
 
+			</div>
 		</div>
 		<div class="right">
 <?php
